@@ -11,7 +11,7 @@ import (
 
 // 查询器结构体
 type Querier struct {
-	Tags  string
+	Tag   string
 	Page  int
 	Limit int
 }
@@ -28,20 +28,8 @@ type Post struct {
 
 // 获取目标数据
 func GetPost(que Querier) Result {
-	var buf bytes.Buffer
 
-	buf.WriteString("https://yande.re/post.xml")
-	buf.WriteByte('?')
-
-	v := url.Values{}
-	//	if que.Tags != nil {
-	//	}
-	v.Set("tags", que.Tags)
-	v.Set("page", strconv.Itoa(que.Page))
-	v.Set("limit", strconv.Itoa(que.Limit))
-	//	v.Encode()
-	buf.WriteString(v.Encode())
-	resp, err := http.Get(buf.String())
+	resp, err := http.Get(GetUrl(que))
 	if err != nil {
 
 	}
@@ -57,4 +45,22 @@ func GetPost(que Querier) Result {
 	}
 
 	return result
+}
+
+// 获取资源地址
+func GetUrl(que Querier) string {
+	var buf bytes.Buffer
+
+	buf.WriteString("https://yande.re/post.xml")
+	buf.WriteByte('?')
+
+	v := url.Values{}
+	//	if que.Tag != nil {
+	//	}
+	v.Set("tags", que.Tag)
+	v.Set("page", strconv.Itoa(que.Page))
+	v.Set("limit", strconv.Itoa(que.Limit))
+	//	v.Encode()
+	buf.WriteString(v.Encode())
+	return buf.String()
 }
